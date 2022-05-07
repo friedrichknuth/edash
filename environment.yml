@@ -8,18 +8,16 @@ dependencies:
   - pooch
   - holoviews
   - hvplot
-  
-#   - geopandas
-#   - geoviews
-#   - matplotlib
-#   - rasterio
-#   - rioxarray
-#   - shapely
-#   - gdown
-#   - pooch
-#   - jupyter-server-proxy
-#   - nodejs
-#   - pip
-#   - pip:
-#     - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
-#     - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
+  - geopandas
+  - geoviews
+  - matplotlib
+  - rasterio
+  - rioxarray
+  - shapely
+  - gdown
+  - jupyter-server-proxy
+  - nodejs
+  - pip
+  - pip:
+    - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
+    - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
