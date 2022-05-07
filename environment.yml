@@ -2,23 +2,24 @@ name: edash
 channels:
   - conda-forge
 dependencies:
-  - black
-  - geopandas
-  - geoviews
+  - panel
+  - numpy
+  - xarray
+  - pooch
   - holoviews
   - hvplot
-  - matplotlib
-  - numpy
-  - panel
-  - rasterio
-  - rioxarray
-  - shapely
-  - xarray
-  - gdown
-  - pooch
-  - jupyter-server-proxy
-  - nodejs
-  - pip
-  - pip:
-    - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
-    - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
+  
+#   - geopandas
+#   - geoviews
+#   - matplotlib
+#   - rasterio
+#   - rioxarray
+#   - shapely
+#   - gdown
+#   - pooch
+#   - jupyter-server-proxy
+#   - nodejs
+#   - pip
+#   - pip:
+#     - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
+#     - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
