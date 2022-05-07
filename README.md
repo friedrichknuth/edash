@@ -1,2 +1,2 @@
 # edash
-Dashboard for interactive Earth elevation data analysis
+Dashboard for interactive elevation data analysis
