@@ -5,9 +5,11 @@ Dashboard for interactive elevation data analysis.
 
 Click on icon below to launch app :rocket:
 
-[![badge](https://img.shields.io/static/v1.svg?logo=mybinder&label=Launch+App&message=mybinder&color=green)](https://mybinder.org/v2/gh/friedrichknuth/edash/binder?urlpath=/proxy/5009/dashboard)
-
 *If you get a 500 Internal Server Error, refresh the URL in your browser.*
+
+[![badge](https://img.shields.io/static/v1.svg?logo=mybinder&label=Launch+App&message=mybinder&color=green)](https://mybinder.org/v2/gh/friedrichknuth/edash/binder?urlpath=/proxy/5009/dashboard) (potentially faster)
+
+[![badge](https://img.shields.io/static/v1.svg?logo=mybinder&label=Launch+App&message=mybinder&color=green)](https://gesis.mybinder.org/v2/gh/friedrichknuth/edash/binder?urlpath=/proxy/5009/dashboard) (more memory)
 
 
 ### Team
