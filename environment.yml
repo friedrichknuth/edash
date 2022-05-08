@@ -2,6 +2,7 @@ name: edash
 channels:
   - conda-forge
 dependencies:
+  - opencv
   - panel
   - numpy
   - xarray
