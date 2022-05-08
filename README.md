@@ -10,7 +10,6 @@ Dashboard for interactive elevation data analysis
 
 ```
 $ git clone https://github.com/friedrichknuth/edash.git
-$ cd ./edash
 $ conda env create -f https://raw.githubusercontent.com/friedrichknuth/edash/binder/environment.yml
 $ conda activate edash
 ```
