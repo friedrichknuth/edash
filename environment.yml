@@ -1,9 +1,10 @@
 name: edash
 channels:
   - conda-forge
+  - intel
 dependencies:
   - h5netcdf
-  - opencv
+  - opencv-python-headless
   - panel
   - numpy
   - xarray
