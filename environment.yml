@@ -1,10 +1,8 @@
 name: edash
 channels:
   - conda-forge
-  - intel
 dependencies:
   - h5netcdf
-  - opencv-python-headless
   - panel
   - numpy
   - xarray
@@ -22,5 +20,6 @@ dependencies:
   - nodejs
   - pip
   - pip:
+    - opencv-python-headless
     - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
     - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
