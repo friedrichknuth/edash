@@ -3,7 +3,7 @@ Dashboard for interactive elevation data analysis.
 
 ### App
 
-Click on icon below to launch app :rocket:
+Click on icon below to launch dashboard app :rocket: (source code is on `binder` branch)
 
 *If you get a 500 Internal Server Error, refresh the URL in your browser.*
 
