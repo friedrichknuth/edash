@@ -1,0 +1,39 @@
+name: dem-dash
+channels:
+  - conda-forge
+dependencies:
+  - h5netcdf
+  - panel
+  - numpy
+  - xarray
+  - pooch
+  - holoviews
+  - hvplot
+  - geopandas
+  - geoviews
+  - matplotlib
+  - rasterio
+  - rioxarray
+  - shapely
+  - gdown
+  - jupyter-server-proxy
+  - nodejs
+  - pip
+  - bokeh==2.4.1
+  - earthengine-api
+
+  - pip:
+    - geojson
+    - opencv-python-headless
+    - keplergl
+    - palettable
+    - localtileserver
+    - streamlit
+    - streamlit-folium
+    - streamlit-keplergl
+    - streamlit-bokeh-events
+    - "git+https://github.com/GlacioHack/xdem.git#egg=xdem"
+    - "git+https://github.com/GlacioHack/GeoUtils.git#egg=GeoUtils"
+    - "git+https://github.com/giswqs/leafmap"
+    - "git+https://github.com/giswqs/geemap"
+
