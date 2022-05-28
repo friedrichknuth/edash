@@ -1,7 +1,17 @@
 # edash
 Dashboard for interactive elevation data analysis.
 
-### App
+### (NEW) Streamlit app local installation
+(use mamba or conda to install the virtual environment)
+```
+$ git clone https://github.com/friedrichknuth/edash.git
+$ conda env create -f https://raw.githubusercontent.com/friedrichknuth/edash/main/environment.yml
+$ conda activate dem-dash
+$ streamlit run demdash_app.py
+```
+Navigate to the address shown by Streamlit & try interacting with the app.
+
+### (A3 version) App
 
 Click on icon below to launch dashboard app :rocket: (source code is on `binder` branch)
 
