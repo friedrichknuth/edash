@@ -1,6 +1,7 @@
 import streamlit as st
 import rioxarray
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import numpy as np
 import geopandas as gpd
@@ -10,23 +11,32 @@ import xarray as xr
 import leafmap.foliumap as leafmap
 import geojson
 
+from demdash_functions import *
+
 
 # TODO bug: will need to figure out something like this to make raster actually display if not running streamlit & browser locally!
 #import os
 #os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
 
+st.set_page_config(layout="wide")
 st.title("DEM Dashboard Tool")
-st.header("Difference map tool")
-st.text("Adjust the sliders to choose which start and end year to compute elevation difference map")
+
 years = [2014,2015,2016,2017,2018,2019,2020,2021]
 dems = {}
 
+dem_filenames = {}
 for year in years:
+    dem_filenames[year] = f"test_data_dir/{year}.tif"
+    # TODO clean up
     dems[year] = rioxarray.open_rasterio(f"test_data_dir/{year}.tif", masked=True)
 
-values = st.select_slider("Year", options=years, value=(years[0], years[-1]))
-print(values)
 
+
+# with col1:
+st.header("Difference map tool")
+st.text("Adjust the sliders to choose which start and end year to compute elevation difference map")
+
+values = st.select_slider("Year", options=years, value=(years[0], years[-1]))
 
 fig,ax = plt.subplots(1,1)
 diff = dems[values[1]] - dems[values[0]]
@@ -35,80 +45,87 @@ diff.plot(ax=ax)
 st.pyplot(fig)
 
 
-st.header("Transect tool")
+
+### TRANSECT TOOL DISPLAY
+st.header("Transect tool: for now draw a line between any two points")   
+st.text("Export as GeoJSON, drag file onto uploader, our code will sample the points along your line and plot the elevation profile")
+geojson_file = st.file_uploader("Upload GeoJSON")
+
+col1, col2 = st.columns([10,6])
 
 
-
-
-m = leafmap.Map(latlon_control=False, draw_export=True)#, crs="EPSG:32610")
+m = leafmap.Map(latlon_control=False, draw_export=True, zoom=12)#, crs="EPSG:32610")
 # m.add_cog_layer("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_cog.tif")
 # m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021.tif", layer_name="dem2021")
+# diff.rio.to_raster("diff.tif")
+# for year in years:
+#     #TODO just showing this is possible, don't ACTUALLy want qgis style
+#     m.add_local_tile(dem_filenames[year], layer_name=f"{year}")
+
+# m.add_local_tile("diff.tif", layer_name="diff_from_above", cmap="RdBu")
 m.add_local_tile("test_data_dir/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
 # m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
 
 # m.add_raster("/mnt/1.0_TB_VOLUME/sethv/2022_easton_wip_make_repo/dem_raster_stack/2021.tif", colormap="terrain", layer_name='DEM') #'terrain
 
-def get_profile(geojson_filename):
-
-    # Reuse plotProfile_elev code
-    num = 100
-    gf_epsg4326 = gpd.read_file(geojson_filename)
-    gf = gf_epsg4326.to_crs("epsg:32610")
-    
-    sgeom = gf.geometry.values[0]
-    print(sgeom)
-    print(gf.geometry.length.values)
-    
-    distances = np.linspace(0, gf.geometry.length.values[0], num) 
-    print(distances)
-    points = [sgeom.interpolate(x) for x in distances]
-    xs = xr.DataArray([p.x for p in points], dims='distance', coords=[distances])
-    ys = xr.DataArray([p.y for p in points], dims='distance', coords=[distances])
-    
-    # sample elevation
-    dss = dems[2021].sel(x=xs, y=ys, method='nearest')
-    print(dss.shape)
-    # dss = ds['elevation'].sel(x=xs, y=ys, method='nearest')
-    df = dss.to_dataframe(name='elevation')
-    # print(dss)
-    
-    print(distances)
-    print(dss.data)
-    return distances, dss
-
-def plot_profile(geojson_filename,ax,name="name of transect goes here", color="blue"):
-    distances, dss = get_profile(geojson_filename)
-    ax.plot(distances, dss.data.squeeze(), label=name, color=color)
-    plt.legend()
-
-geojson_file = st.file_uploader("Upload GeoJSON")
 
 # Illustrate how this is done with an example preloaded transect
 gj_ex_filename = "test_data_dir/example_easton_transect.geojson"
 with open(gj_ex_filename) as gj_ex_file:
     gj_ex = geojson.load(gj_ex_file)
+    
+    gdf_epsg4326_ex = gpd.read_file(gj_ex_filename)
+    gdf_ex = gdf_epsg4326_ex.to_crs("epsg:32610")
+
 m.add_geojson(gj_ex, layer_name="Example GeoJSON transect used to make plots", style={"color":"blue", "fillColor":"blue"})
 
+with col2:
+    fig,ax = plt.subplots(1,1,figsize=(6,3))
+    fig.suptitle("EXAMPLE transect already on map elevation profile")
+    plot_line_elevation(gdf=gdf_ex, ax=ax, dems=dems, years=years, name="name of transect goes here", color="blue")
+    st.pyplot(fig)
 
-fig,ax = plt.subplots(1,1,figsize=(6,3))
-plot_profile(gj_ex_filename,ax,"example transect profile", color="blue")
-st.pyplot(fig)
 
+    fig,ax = plt.subplots(1,1,figsize=(6,3))
+    dss = get_profile(gdf_ex, dems[2021])[1]
+    # ax.hist(dss.data.squeeze(), color="blue")
+    ax.set_title("KDEPLOT of EXAMPLE elevation values")
+    seaborn_hist = sns.kdeplot(dss.data.squeeze(), ax=ax)
+    st.pyplot(fig)
 
-fig,ax = plt.subplots(1,1,figsize=(6,3))
-dss = get_profile(gj_ex_filename)[1]
-ax.hist(dss.data.squeeze(), color="blue")
-ax.set_title("histogram of elevation values")
-st.pyplot(fig)
+if geojson_file is not None: 
+    #TODO load the geojson ONCE and figure out which kind of geometry we are dealing with
+    # if this is a box:
 
-if geojson_file is not None:
-        
+    gdf_epsg4326 = gpd.read_file(geojson_file)
+    gdf = gdf_epsg4326.to_crs("epsg:32610")
+    assert len(gdf.geometry) == 1, "We assume GeoJSON with only 1 polygon/line/point in them"
+
+    with col2:
+        st.write(type(gdf.geometry.type[0]))
+        feature_type = gdf.geometry.type[0]
+        if feature_type == "LineString":
+            fig,ax = plt.subplots(3,1,figsize=(6,3))
+            fig.suptitle("profile of user uploaded transect")
+            plot_line_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, name="name of transect goes here", color="blue")
+            # SLOPE
+            # ASPECT
+
+            st.pyplot(fig)
+
+        if feature_type == "Point":
+            fig,ax = plt.subplots(3,1,figsize=(6,3))
+            fig.suptitle("timeseries at this point")
+            # plot_point_elevation()
+            
+
+    
+    """
+    get_average_elevation_time_series(gdf)
+    
     fig,ax = plt.subplots(1,1,figsize=(6,3))
     print(geojson_file.name)
-    # st.write(geojson_file)
-
-    plot_profile(geojson_file,ax,name="user uploaded geojson transect profile", color="red")
-    st.pyplot(fig)
+    """
 
     gj = geojson.loads(geojson_file.getvalue())
 
@@ -151,13 +168,10 @@ if geojson_file is not None:
     # This should be a histogram of aspect but not going to compute that yet
     # dems[2021].plot.hist(ax=ax)
 
-    
-    
 
-    
-st.header("Transect tool: for now draw a line between any two points")   
-st.text("Export as GeoJSON, drag file onto uploader, our code will sample the points along your line and plot the elevation profile")
-m.to_streamlit()
+
+with col1:
+    m.to_streamlit()
 
 
 
