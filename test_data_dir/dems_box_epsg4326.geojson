@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "dems_box_epsg4326",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "location": "test_data_dir/2021.tif" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -121.84170074557052, 48.740256838834831 ], [ -121.832263363394887, 48.740161580196137 ], [ -121.832407321899765, 48.73394661671712 ], [ -121.841843541271999, 48.734041854652922 ], [ -121.84170074557052, 48.740256838834831 ] ] ] } }
+]
+}
