@@ -34,11 +34,11 @@ for year in years:
 
 
 with st.sidebar:
-    tool_choice = st.radio("Choose tool", ("DEM Difference", "DEM Explorer", "Timelapse"))
+    tool_choices = st.multiselect("Choose tool(s) to display:", ["DEM Difference", "DEM Explorer", "Timelapse"], default=["DEM Difference", "DEM Explorer", "Timelapse"])
     # st.write("Current tool:", add_radio)
 
 # with col1:
-if tool_choice == "DEM Difference":
+if "DEM Difference" in tool_choices:
     st.header("Elevation difference map: choose start and end year using sliders")
 
     values = st.select_slider("Year", options=years, value=(years[0], years[-1]))
@@ -56,122 +56,124 @@ if tool_choice == "DEM Difference":
 
 
     st.pyplot(fig)
-    st.write("Difference map goes here, turned off while working on other features")
+    # st.write("Difference map goes here, turned off while working on other features")
+
+if "DEM Explorer" in tool_choices:
+    ### TRANSECT TOOL DISPLAY
+    st.header("Transect tool: pick a point, draw a line, or sketch a polygon. Export then drag GeoJSON onto uploader to see elevation/slope/aspect statistics")
+    st.markdown("Demo workaround: hillshades/color images aren't rendering in the gray box when viewing remotely, clue=[Github](https://github.com/streamlit/streamlit/pull/4677)")
+    uploaded_geojson_file = st.file_uploader("Upload GeoJSON")
+
+    col1, col2 = st.columns([10,6])
 
 
-### TRANSECT TOOL DISPLAY
-st.header("Transect tool: pick a point, draw a line, or sketch a polygon. Export then drag GeoJSON onto uploader to see elevation/slope/aspect statistics")
-st.markdown("Demo workaround: hillshades/color images aren't rendering in the gray box when viewing remotely, clue=[Github](https://github.com/streamlit/streamlit/pull/4677)")
-uploaded_geojson_file = st.file_uploader("Upload GeoJSON")
+    m = leafmap.Map(google_map="HYBRID", draw_export=True)#latlon_control=True, draw_export=True)#, zoom=13)#, crs="EPSG:32610")
+    # m.add_cog_layer("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_cog.tif")
+    # m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021.tif", layer_name="dem2021")
+    # diff.rio.to_raster("diff.tif")
+    # for year in years:
+    #     #TODO just showing this is possible, don't ACTUALLy want qgis style
+    #     m.add_local_tile(dem_filenames[year], layer_name=f"{year}")
 
-col1, col2 = st.columns([10,6])
+    # m.add_local_tile("diff.tif", layer_name="diff_from_above", cmap="RdBu")
+    # m.split_map(left_layer="OpenTopoMap", right_layer="OpenTopoMap")
 
+    # TODO trying to figure out how to get the TIFFs to show up when viewing from other machines
+    # https://github.com/streamlit/streamlit/pull/4677
 
-m = leafmap.Map(google_map="HYBRID", draw_export=True)#latlon_control=True, draw_export=True)#, zoom=13)#, crs="EPSG:32610")
-# m.add_cog_layer("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_cog.tif")
-# m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021.tif", layer_name="dem2021")
-# diff.rio.to_raster("diff.tif")
-# for year in years:
-#     #TODO just showing this is possible, don't ACTUALLy want qgis style
-#     m.add_local_tile(dem_filenames[year], layer_name=f"{year}")
+    # url = 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+    # url = "http://localhost:39881/2021_hs_cog.tif"
+    # m.add_cog_layer("http://localhost:40000")#, name="2021_hs_cog.tif")
+    # m.add_local_tile("test_data_dir/resampled_sethv1_easton_20210924_without_gcps_transparent_mosaic_group1.tif") #  http://127.0.0.1:39189 is where it looked for tile
+    m.add_local_tile("test_data_dir/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
+    # m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
 
-# m.add_local_tile("diff.tif", layer_name="diff_from_above", cmap="RdBu")
-# m.split_map(left_layer="OpenTopoMap", right_layer="OpenTopoMap")
-
-# TODO trying to figure out how to get the TIFFs to show up when viewing from other machines
-# https://github.com/streamlit/streamlit/pull/4677
-
-# url = 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
-# url = "http://localhost:39881/2021_hs_cog.tif"
-# m.add_cog_layer("http://localhost:40000")#, name="2021_hs_cog.tif")
-# m.add_local_tile("test_data_dir/resampled_sethv1_easton_20210924_without_gcps_transparent_mosaic_group1.tif") #  http://127.0.0.1:39189 is where it looked for tile
-m.add_local_tile("test_data_dir/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
-# m.add_local_tile("/mnt/1.0_TB_VOLUME/sethv/cse512/a3/edash/dem_raster_stack/2021_hs.tif", layer_name="hs2021")#, colormap="terrain")#, debug=True)
-
-# m.add_raster("/mnt/1.0_TB_VOLUME/sethv/2022_easton_wip_make_repo/dem_raster_stack/2021.tif", colormap="terrain", layer_name='DEM') #'terrain
+    # m.add_raster("/mnt/1.0_TB_VOLUME/sethv/2022_easton_wip_make_repo/dem_raster_stack/2021.tif", colormap="terrain", layer_name='DEM') #'terrain
 
 
-# Illustrate how this is done with an example preloaded transect
-gj_ex_filename = "test_data_dir/example_easton_transect.geojson"
-with open(gj_ex_filename) as gj_ex_file:
-    gj_ex = geojson.load(gj_ex_file)
-    
-    gdf_epsg4326_ex = gpd.read_file(gj_ex_filename)
-    gdf_ex = gdf_epsg4326_ex.to_crs("epsg:32610")
+    # Illustrate how this is done with an example preloaded transect
+    gj_ex_filename = "test_data_dir/example_easton_transect.geojson"
+    with open(gj_ex_filename) as gj_ex_file:
+        gj_ex = geojson.load(gj_ex_file)
+        
+        gdf_epsg4326_ex = gpd.read_file(gj_ex_filename)
+        gdf_ex = gdf_epsg4326_ex.to_crs("epsg:32610")
 
-if uploaded_geojson_file is not None:
-    geojson_file = uploaded_geojson_file
-    gj = geojson.loads(geojson_file.getvalue())
-else:
-    # use example geojson to show how to use the tool
-    geojson_file = gj_ex_filename
-    with open(geojson_file) as f:
-        gj = geojson.load(f)#s(geojson_file.getvalue())
-
-# load the geojson ONCE and figure out which kind of geometry we are dealing with
-
-gdf_epsg4326 = gpd.read_file(geojson_file)
-gdf = gdf_epsg4326.to_crs("epsg:32610")
-assert len(gdf.geometry) == 1, "We only support GeoJSONs with exactly 1 polygon/line/point"
-
-
-with col2:
-
-    # Make 3 subplots of elevation, slope, aspect regardless of user's GeoJSON type
-    fig,ax = plt.subplots(3,1,figsize=(6,9))
-    
-    feature_type = gdf.geometry.type[0]
-    if feature_type == "LineString":
-        # TODO where should this sort of color scheme setting happen?
-        sns.set_palette(sns.color_palette("tab10"))
-
-        sns.set_palette("Blues", n_colors=10)
-        # fig.suptitle("profile of user uploaded transect")
-        plot_line_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation profile along transect")
-        plot_line_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slopes along transect")
-        plot_line_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Distribution of aspects along transect")
-        plt.tight_layout()
-
-    elif feature_type == "Point":
-        # sns.set_palette(sns.color_palette("Blues", as_cmap=True).reversed(), n_colors=1)
-        # fig.suptitle("Time series at this point")
-        plot_point_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation time series @ point")
-        plot_point_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slope time series @ point")
-        plot_point_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Aspect time series @ point")
-        plt.tight_layout()
-
-    elif feature_type == "Polygon":
-        # sns.set_palette("Blues", n_colors=1)
-        fig.suptitle("elevation/slope/aspect stats for this polygon")
-        plot_polygon_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation within polygon")
-        plot_polygon_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slope within polygon")
-        plot_polygon_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Aspect within polygon")
-        plt.tight_layout()
-    
+    if uploaded_geojson_file is not None:
+        geojson_file = uploaded_geojson_file
+        gj = geojson.loads(geojson_file.getvalue())
     else:
-        raise NotImplementedError("Unsupported GeoJSON type")
+        # use example geojson to show how to use the tool
+        geojson_file = gj_ex_filename
+        with open(geojson_file) as f:
+            gj = geojson.load(f)#s(geojson_file.getvalue())
 
-    st.pyplot(fig)
+    # load the geojson ONCE and figure out which kind of geometry we are dealing with
 
-# Draw the user's transect/point/polygon on the map
-m.add_geojson(gj, layer_name="JSON profile uploaded by user", style={"color":"red", "fillColor":"red"})
+    gdf_epsg4326 = gpd.read_file(geojson_file)
+    gdf = gdf_epsg4326.to_crs("epsg:32610")
+    assert len(gdf.geometry) == 1, "We only support GeoJSONs with exactly 1 polygon/line/point"
 
-# TODO quick hack for demo to work around invisible rasters...
-# Since rasters are not rendering on remote machines accessing the app,
-# instead just rely on the basemap and draw a box around the DEM extent
-# Generated raster extent with gdaltindex in EPSG:4326
-with open("test_data_dir/dems_box_epsg4326.geojson") as f:
-    gj_raster_extent = geojson.load(f)
 
-# Would have to Reproject to EPSG 4326 if not done in gdaltindex
-m.add_geojson(gj_raster_extent, layer_name="Extent of study area DEMs", style={"color":"gray", "fillColor":"none"})
+    with col2:
 
-with col1:
-    # The map goes in the first column
-    m.to_streamlit()
+        # Make 3 subplots of elevation, slope, aspect regardless of user's GeoJSON type
+        fig,ax = plt.subplots(3,1,figsize=(6,9))
+        
+        feature_type = gdf.geometry.type[0]
+        if feature_type == "LineString":
+            # TODO where should this sort of color scheme setting happen?
+            sns.set_palette(sns.color_palette("tab10"))
 
-st.header("Timelapse tool (apps will go on separate pages eventually)")
-st.text("Work in progress porting \"Create Timelapse\" tool from streamlit.geemap.org") 
+            sns.set_palette("Blues", n_colors=10)
+            # fig.suptitle("profile of user uploaded transect")
+            plot_line_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation profile along transect")
+            plot_line_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slopes along transect")
+            plot_line_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Distribution of aspects along transect")
+            plt.tight_layout()
+
+        elif feature_type == "Point":
+            # sns.set_palette(sns.color_palette("Blues", as_cmap=True).reversed(), n_colors=1)
+            # fig.suptitle("Time series at this point")
+            plot_point_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation time series @ point")
+            plot_point_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slope time series @ point")
+            plot_point_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Aspect time series @ point")
+            plt.tight_layout()
+
+        elif feature_type == "Polygon":
+            # sns.set_palette("Blues", n_colors=1)
+            fig.suptitle("elevation/slope/aspect stats for this polygon")
+            plot_polygon_elevation(gdf=gdf, ax=ax[0], dems=dems, years=years, title="Elevation within polygon")
+            plot_polygon_slope(gdf=gdf, ax=ax[1], dems=dems, years=years, title="Slope within polygon")
+            plot_polygon_aspect(gdf=gdf, ax=ax[2], dems=dems, years=years, title="Aspect within polygon")
+            plt.tight_layout()
+        
+        else:
+            raise NotImplementedError("Unsupported GeoJSON type")
+
+        st.pyplot(fig)
+
+    # Draw the user's transect/point/polygon on the map
+    m.add_geojson(gj, layer_name="JSON profile uploaded by user", style={"color":"red", "fillColor":"red"})
+
+    # TODO quick hack for demo to work around invisible rasters...
+    # Since rasters are not rendering on remote machines accessing the app,
+    # instead just rely on the basemap and draw a box around the DEM extent
+    # Generated raster extent with gdaltindex in EPSG:4326
+    with open("test_data_dir/dems_box_epsg4326.geojson") as f:
+        gj_raster_extent = geojson.load(f)
+
+    # Would have to Reproject to EPSG 4326 if not done in gdaltindex
+    m.add_geojson(gj_raster_extent, layer_name="Extent of study area DEMs", style={"color":"gray", "fillColor":"none"})
+
+    with col1:
+        # The map goes in the first column
+        m.to_streamlit()
+
+if "Timelapse" in tool_choices:
+    st.header("Timelapse tool (apps will go on separate pages eventually)")
+    st.markdown("Work in progress porting \"Create Timelapse\" tool from streamlit.geemap.org") 
+    st.markdown("Want to produce animations like [this one of hillshades and color orthoimages changing over the years](https://www.ce.washington.edu/files/images/news/easton_hillshade_ortho_timeseries_animation_2014-2021_lidar_web.gif) or [this animation of the glacier surface elevation decreasing over time](https://static.us.edusercontent.com/files/Mbfc9qhDCn6EhSU0Nx9uWkea) with more control over configuration, which data included, etc.")
 
 # # https://matplotlib.org/stable/gallery/animation/dynamic_image.html
 # # https://matplotlib.org/stable/api/_as_gen/matplotlib.animation.FuncAnimation.html
