@@ -7,6 +7,8 @@ Dashboard for interactive elevation data analysis.
 (We recommend using [`mamba`](mamba.readthedocs.io/) instead of `conda` to install the virtual environment due to `conda` being slow/getting stuck)
 ```
 $ git clone https://github.com/friedrichknuth/edash.git
+$ cd edash
+$ git checkout streamlit
 $ mamba env create -f https://raw.githubusercontent.com/friedrichknuth/edash/streamlit/environment.yml
 $ conda activate dem-dash
 $ streamlit run demdash_app.py
