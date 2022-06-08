@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 import rioxarray
@@ -167,9 +169,11 @@ def compute_slope(dem):
     # Write to a new TIFF so that we can use GDAL
     # TODO delete temporary rasters
     # TODO BUG weird stuff with writing multiple versions of same raster filename
-    tmp_filename = f"tmp_slope_aspect_rasters/tmp{random.randint(1,10000)}.tif"
+    tmp_raster_dir = "tmp_slope_aspect_rasters"
+    os.makedirs(tmp_raster_dir, exist_ok=True)
+    tmp_filename = f"{tmp_raster_dir}/tmp{random.randint(1,10000)}.tif"
     dem.rio.to_raster(tmp_filename)
-    tmp_out_filename = f"tmp_slope_aspect_rasters/tmp_out{random.randint(1,10000)}.tif"
+    tmp_out_filename = f"{tmp_raster_dir}/tmp_out{random.randint(1,10000)}.tif"
     gdal.DEMProcessing(tmp_out_filename, tmp_filename, 'slope')
     return rioxarray.open_rasterio(tmp_out_filename, masked=True)
 
@@ -179,9 +183,11 @@ def compute_aspect(dem):
     # TODO check a3 tools
     # Write to a new TIFF so that we can use GDAL
     # TODO delete temporary rasters
-    tmp_filename = f"tmp_slope_aspect_rasters/tmp{random.randint(1,10000)}.tif"
+    tmp_raster_dir = "tmp_slope_aspect_rasters"
+    os.makedirs(tmp_raster_dir, exist_ok=True)
+    tmp_filename = f"{tmp_raster_dir}/tmp{random.randint(1,10000)}.tif"
     dem.rio.to_raster(tmp_filename)
-    tmp_out_filename = f"tmp_slope_aspect_rasters/tmp_out{random.randint(1,10000)}.tif"
+    tmp_out_filename = f"{tmp_raster_dir}/tmp_out{random.randint(1,10000)}.tif"
     gdal.DEMProcessing(tmp_out_filename, tmp_filename, 'aspect')
     return rioxarray.open_rasterio(tmp_out_filename, masked=True)
 
