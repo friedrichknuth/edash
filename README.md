@@ -4,14 +4,16 @@ Dashboard for interactive elevation data analysis.
 
 
 ### (NEW) Streamlit app local installation
-(We recommend using [`mamba`](mamba.readthedocs.io/) instead of `conda` to install the virtual environment due to `conda` being slow/getting stuck)
+(We recommend using [`mamba`](mamba.readthedocs.io/) instead of `conda` to create the virtual environment due to `conda` being slow/getting stuck, but both work in theory...)
 ```
 $ git clone https://github.com/friedrichknuth/edash.git
-$ mamba env create -f https://raw.githubusercontent.com/friedrichknuth/edash/streamlit/environment.yml
+$ cd edash
+$ git checkout streamlit
+$ mamba env create -f environment.yml
 $ conda activate dem-dash
 $ streamlit run demdash_app.py
 ```
-Navigate to the address shown by Streamlit & try interacting with the app.
+Navigate to the address shown by Streamlit (e.g. `http://localhost:8501`) & try interacting with the app.
 
 ### (A3 version) App
 
