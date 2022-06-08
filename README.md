@@ -4,9 +4,9 @@ Dashboard for interactive elevation data analysis.
 
 
 ### (NEW) Streamlit app local installation
-[Screencast of what the app looks like running locally](https://raw.githubusercontent.com/friedrichknuth/edash/streamlit/streamlit-demdash_app-2022-06-07-19-06-45.webm)
+[Screencast of what the app looks like running locally, no audio yet](https://raw.githubusercontent.com/friedrichknuth/edash/streamlit/streamlit-demdash_app-2022-06-07-19-06-45.webm)
 
-(We recommend using [`mamba`](mamba.readthedocs.io/) instead of `conda` to create the virtual environment due to `conda` being slow/getting stuck, but both work in theory...)
+(We recommend using [`mamba`](https://mamba.readthedocs.io/) instead of `conda` to create the virtual environment due to `conda` being slow/getting stuck, but both work in theory...)
 
 ```
 $ git clone https://github.com/friedrichknuth/edash.git
