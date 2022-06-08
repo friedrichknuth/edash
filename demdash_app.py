@@ -32,10 +32,29 @@ for year in years:
     # TODO clean up
     dems[year] = rioxarray.open_rasterio(f"test_data_dir/{year}.tif", masked=True)
 
+sidebar_text = """
+**About this tool:**
+
+Mountain landscapes are dynamic--built up by volcanism and tectonic collisions and torn down by harsh weather, scouring glaciers, and incising streams, they are always changing. To quantify these changes, scientists create digital elevation models (DEMs), precise maps of elevation over the surface of the earth. By comparing DEMs from different points in time, we can learn how quickly glaciers are melting, cliffs are crumbling, rivers are carrying away debris, and much more. For this project, we created a dashboard containing interactive tools for exploring and visualizing how mountain landscapes are changing over time. Dem-dash is designed to be useful to scientists and engineers across disciplines while remaining accessible to laypeople. 
+
+**Glossary of key terms:**
+* **DEM** - Digital elevation model. A 3D computer graphics representation of elevation data to represent terrain, commonly of a planet, moon, or asteroid.
+* **Elevation** - Height above a given reference point. 
+* **Slope** - A measurement of how steep the ground surface is. The steeper the surface the greater the slope. 
+* **Aspect** - A measurement of the direction the ground surface faces. 
+    - 0 or 360 degrees: North
+    - 90 degrees: East
+    - 180 degrees: South
+    - 270 degrees: West
+
+* **Kernel Density** - A non-parametric way to estimate the probability density function of a variable. Here, kernel density is implemented to show the dominant aspect along a transect or within a polygon. 
+
+"""
 
 with st.sidebar:
     tool_choices = st.multiselect("Choose tool(s) to display:", ["DEM Difference", "DEM Explorer", "Timelapse"], default=["DEM Difference", "DEM Explorer", "Timelapse"])
     # st.write("Current tool:", add_radio)
+    st.markdown(sidebar_text)
 
 # with col1:
 if "DEM Difference" in tool_choices:
@@ -60,7 +79,7 @@ if "DEM Difference" in tool_choices:
 
 if "DEM Explorer" in tool_choices:
     ### TRANSECT TOOL DISPLAY
-    st.header("Transect tool: pick a point, draw a line, or sketch a polygon. Export then drag GeoJSON onto uploader to see elevation/slope/aspect statistics")
+    st.header("Transect tool: pick a point, draw a line, or sketch a polygon. Click Export then drag GeoJSON file onto uploader to see elevation/slope/aspect statistics!")
     st.markdown("Demo workaround: hillshades/color images aren't rendering in the gray box when viewing remotely, clue=[Github](https://github.com/streamlit/streamlit/pull/4677)")
     uploaded_geojson_file = st.file_uploader("Upload GeoJSON")
 
@@ -172,7 +191,7 @@ if "DEM Explorer" in tool_choices:
 
 if "Timelapse" in tool_choices:
     st.header("Timelapse tool (apps will go on separate pages eventually)")
-    st.markdown("Work in progress porting \"Create Timelapse\" tool from streamlit.geemap.org") 
+    st.markdown("Work in progress porting \"Create Timelapse\" tool from https://streamlit.geemap.org") 
     st.markdown("Want to produce animations like [this one of hillshades and color orthoimages changing over the years](https://www.ce.washington.edu/files/images/news/easton_hillshade_ortho_timeseries_animation_2014-2021_lidar_web.gif) or [this animation of the glacier surface elevation decreasing over time](https://static.us.edusercontent.com/files/Mbfc9qhDCn6EhSU0Nx9uWkea) with more control over configuration, which data included, etc.")
 
 # # https://matplotlib.org/stable/gallery/animation/dynamic_image.html
